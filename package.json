@@ -1,0 +1,17 @@
+{
+  "name": "git-sync-repo",
+  "version": "0.0.1",
+  "description": "auto sync repo",
+  "main": "index.js",
+  "bin": {
+    "sync": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-notifier": "^10.0.1"
+  }
+}
