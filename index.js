@@ -67,13 +67,11 @@ if (existsSync(gitDir)) {
         const [, ...msg] = (
           await execCommand("git log -1 --pretty=oneline")
         ).split(" ");
-
-        notifier.notify({
-          title: "已同步至仓库",
-          message: msg.join(" "),
-        });
       } catch (error) {
-        console.error("push 失败" + error);
+        notifier.notify({
+          title: "push 失败",
+          message: error,
+        });
       }
 
       needPush = false;
