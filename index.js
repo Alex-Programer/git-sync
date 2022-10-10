@@ -44,7 +44,7 @@ if (existsSync(gitDir)) {
     }
 
     try {
-      const pullRecord = await execCommand("git pull --rebase");
+      const pullRecord = await execCommand("git pull");
 
       if (pullRecord.indexOf("Updating") !== -1) {
         const [, ...msg] = (
@@ -67,6 +67,11 @@ if (existsSync(gitDir)) {
         const [, ...msg] = (
           await execCommand("git log -1 --pretty=oneline")
         ).split(" ");
+
+        notifier.notify({
+          title: "同步至仓库",
+          message: msg.join(" "),
+        });
       } catch (error) {
         notifier.notify({
           title: "push 失败",
