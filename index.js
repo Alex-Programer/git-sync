@@ -34,8 +34,6 @@ if (existsSync(gitDir)) {
     if (loading) return;
     loading = true;
 
-    await execCommand("git fetch");
-
     const result = await execCommand("git status");
 
     if (result.indexOf("modified:") !== -1) {
