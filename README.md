@@ -1,5 +1,5 @@
 # git-sync-repo
 
-## ntroduce
+## Introduce
 
 A tool to automatically synchronize repository code
