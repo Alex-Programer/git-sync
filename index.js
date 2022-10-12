@@ -36,7 +36,7 @@ if (existsSync(gitDir)) {
 
     const result = await execCommand("git status");
 
-    if (result.indexOf("modified:") !== -1) {
+    if (result.indexOf("modified:") !== -1 || result.indexOf("deleted:") !== -1) {
       needPush = true;
       await commit();
     }
