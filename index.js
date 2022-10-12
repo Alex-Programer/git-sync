@@ -36,7 +36,10 @@ if (existsSync(gitDir)) {
 
     const result = await execCommand("git status");
 
-    if (result.indexOf("modified:") !== -1 || result.indexOf("deleted:") !== -1) {
+    if (
+      result.indexOf("modified:") !== -1 ||
+      result.indexOf("deleted:") !== -1
+    ) {
       needPush = true;
       await commit();
     }
@@ -83,7 +86,9 @@ if (existsSync(gitDir)) {
     loading = false;
   };
 
-  setInterval(action, 1000);
+  setInterval(() => {
+    if (new Date().getMinutes === 0) action();
+  }, 1000);
 } else {
   console.warn("同步失败，缺少 .git 目录");
 }
