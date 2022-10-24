@@ -53,12 +53,12 @@ if (existsSync(gitDir)) {
         ).split(" ");
 
         notifier.notify({
-          title: "已同步至本地",
+          title: "Sync successfully to locally",
           message: msg.join(" "),
         });
       }
     } catch (error) {
-      console.error("pull 失败" + error);
+      console.error("pull failed" + error);
       await commit();
     }
 
@@ -70,12 +70,12 @@ if (existsSync(gitDir)) {
         ).split(" ");
 
         notifier.notify({
-          title: "同步至仓库",
+          title: "Sync successfully to server",
           message: msg.join(" "),
         });
       } catch (error) {
         notifier.notify({
-          title: "push 失败",
+          title: "push failed",
           message: error,
         });
       }
@@ -87,8 +87,8 @@ if (existsSync(gitDir)) {
   };
 
   setInterval(() => {
-    if (new Date().getMinutes === 0) action();
+    action();
   }, 1000);
 } else {
-  console.warn("同步失败，缺少 .git 目录");
+  console.warn("sync failed, miss '.git' folder");
 }
