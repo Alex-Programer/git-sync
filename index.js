@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { existsSync } = require("node:fs");
+const { existsSync, stat } = require("node:fs");
 const path = require("node:path");
 const { exec } = require("child_process");
 const notifier = require("node-notifier");
@@ -10,11 +10,14 @@ const gitDir = path.resolve(cwd, ".git");
 
 if (!existsSync(gitDir)) throw Error("sync failed, miss '.git' folder");
 
+let loading = false;
+let lastCommitMsg = "";
+
 const execCommand = (command) => {
   return new Promise((resolve, rejected) => {
     exec(command, { cwd }, (error, stdout) => {
       if (error) {
-        rejected(`error: ${error.message}`);
+        rejected(error);
         return;
       }
       resolve(stdout);
@@ -22,17 +25,29 @@ const execCommand = (command) => {
   });
 };
 
-const sync = () =>
-  execCommand(
-    `git add . && git commit -m "[${new Date().toLocaleString()}] sync" && git pull --rebase`
-  );
+const sync = async () => {
+  const status = await execCommand("git status");
+
+  if (status.indexOf("Changes not staged for commit") !== -1) {
+    await execCommand(
+      `git add . && git commit -m "[${new Date().toLocaleString()}] sync"`
+    );
+  }
+
+  await execCommand("git pull");
+};
 
 const isClean = async () => {
   const result = await execCommand("git status");
-  return result.indexOf("working tree clean") !== -1;
+  return result.indexOf("working tree clean") === -1;
 };
 
 const action = async () => {
+  console.log(loading);
+
+  if (loading) return;
+  loading = true;
+
   try {
     await sync();
     if (await isClean()) return;
@@ -40,13 +55,20 @@ const action = async () => {
     const [, ...msg] = (await execCommand("git log -1 --pretty=oneline")).split(
       " "
     );
+
+    const message = msg.join(" ");
+    if (lastCommitMsg && lastCommitMsg === message) return;
+    lastCommitMsg = message;
+
     notifier.notify({
-      title: "Sync successfully to locally",
-      message: msg.join(" "),
+      title: "Sync successfully to server",
+      message,
     });
   } catch (error) {
     console.log(error);
   }
+
+  loading = false;
 };
 
 setInterval(action, 1000);
