@@ -12,3 +12,4 @@ const subprocess = fork(subProcess, {
 });
 
 subprocess.unref();
+process.exit(1);

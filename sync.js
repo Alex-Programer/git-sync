@@ -6,8 +6,6 @@ const notifier = require("node-notifier");
 const cwd = process.cwd();
 const gitDir = path.resolve(cwd, ".git");
 
-console.log(1);
-
 if (!existsSync(gitDir)) throw Error("sync failed, miss '.git' folder");
 
 let loading = false;
