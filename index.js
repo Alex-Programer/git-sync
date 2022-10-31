@@ -8,7 +8,6 @@ const subProcess = path.resolve(__dirname, "./auto-sync.js");
 const subprocess = fork(subProcess, {
   cwd: process.cwd(),
   detached: true,
-  windowsHide: true,
 });
 
 subprocess.unref();

@@ -14,7 +14,7 @@ let branchName = "";
 
 const execCommand = (command) => {
   return new Promise((resolve, rejected) => {
-    exec(command, { cwd }, (error, stdout) => {
+    exec(command, { cwd, windowsHide: true }, (error, stdout) => {
       if (error) {
         rejected(error);
         return;
