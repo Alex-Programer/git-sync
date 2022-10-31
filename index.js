@@ -12,6 +12,7 @@ if (!existsSync(gitDir)) throw Error("sync failed, miss '.git' folder");
 
 let loading = false;
 let lastCommitMsg = "";
+let branchName = "";
 
 const execCommand = (command) => {
   return new Promise((resolve, rejected) => {
@@ -28,13 +29,18 @@ const execCommand = (command) => {
 const sync = async () => {
   const status = await execCommand("git status");
 
-  if (status.indexOf("Changes not staged for commit") !== -1) {
+  const allowCommit = [
+    "Changes not staged for commit",
+    "Changes to be committed",
+  ];
+
+  if (allowCommit.some((item) => status.indexOf(item) !== -1)) {
     await execCommand(
       `git add . && git commit -m "[${new Date().toLocaleString()}] sync"`
     );
   }
 
-  await execCommand("git pull");
+  await execCommand("git pull origin " + branchName);
 };
 
 const isClean = async () => {
@@ -46,10 +52,12 @@ const action = async () => {
   if (loading) return;
   loading = true;
 
+  branchName = await execCommand("git branch --show-current");
+
   try {
     await sync();
     if (await isClean()) return;
-    await execCommand("git push");
+    await execCommand("git push origin " + branchName);
     const [, ...msg] = (await execCommand("git log -1 --pretty=oneline")).split(
       " "
     );
