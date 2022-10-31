@@ -55,14 +55,20 @@ const action = async () => {
 
   try {
     await sync();
-    if (await isClean()) return;
+    if (await isClean()) {
+      loading = false;
+      return;
+    }
     await execCommand("git push origin " + branchName);
     const [, ...msg] = (await execCommand("git log -1 --pretty=oneline")).split(
       " "
     );
 
     const message = msg.join(" ");
-    if (lastCommitMsg && lastCommitMsg === message) return;
+    if (lastCommitMsg && lastCommitMsg === message) {
+      loading = false;
+      return;
+    }
     lastCommitMsg = message;
 
     notifier.notify({
