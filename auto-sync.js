@@ -6,6 +6,7 @@ const notifier = require("node-notifier");
 const cwd = process.cwd();
 const gitDir = path.resolve(cwd, ".git");
 
+const { name } = require(path.resolve(cwd, "package.json"));
 if (!existsSync(gitDir)) throw Error("sync failed, miss '.git' folder");
 
 let loading = false;
@@ -65,7 +66,7 @@ const action = async () => {
     lastCommitMsg = message;
 
     notifier.notify({
-      title: "Sync successfully to server",
+      title: "Sync successfully to server for " + name,
       message,
     });
   } catch (error) {
