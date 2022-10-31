@@ -6,8 +6,12 @@ const notifier = require("node-notifier");
 const cwd = process.cwd();
 const gitDir = path.resolve(cwd, ".git");
 
-const { name } = require(path.resolve(cwd, "package.json"));
 if (!existsSync(gitDir)) throw Error("sync failed, miss '.git' folder");
+const { name } = require(path.resolve(cwd, "package.json"));
+
+process.on("exit", () => {
+  console.log("123");
+});
 
 let loading = false;
 let lastCommitMsg = "";
@@ -84,4 +88,5 @@ const action = async () => {
   loading = false;
 };
 
+process.send("ready");
 setInterval(action, 1000);
