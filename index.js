@@ -43,8 +43,6 @@ const isClean = async () => {
 };
 
 const action = async () => {
-  console.log(loading);
-
   if (loading) return;
   loading = true;
 
