@@ -75,6 +75,8 @@ const action = async () => {
       title: `[${name}] Sync successfully to server`,
       message,
     });
+
+    loading = false;
   } catch (error) {
     console.log(error);
   }
