@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { existsSync, stat } = require("node:fs");
+const { existsSync } = require("node:fs");
 const path = require("node:path");
 const { exec } = require("child_process");
 const notifier = require("node-notifier");
