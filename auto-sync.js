@@ -66,7 +66,7 @@ const action = async () => {
     lastCommitMsg = message;
 
     notifier.notify({
-      title: "Sync successfully to server for " + name,
+      title: `[${name}] Sync successfully to server`,
       message,
     });
   } catch (error) {
