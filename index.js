@@ -1,80 +1,14 @@
 #!/usr/bin/env node
 
-const { existsSync } = require("node:fs");
-const path = require("node:path");
-const { exec } = require("child_process");
-const notifier = require("node-notifier");
+const { fork } = require("node:child_process");
+const path = require("path");
 
-const cwd = process.cwd();
-const gitDir = path.resolve(cwd, ".git");
+const subProcess = path.resolve(__dirname, "./sync.js");
 
-if (!existsSync(gitDir)) throw Error("sync failed, miss '.git' folder");
+const subprocess = fork(subProcess, {
+  cwd: process.cwd(),
+  detached: true,
+  silent: true,
+});
 
-let loading = false;
-let lastCommitMsg = "";
-let branchName = "";
-
-const execCommand = (command) => {
-  return new Promise((resolve, rejected) => {
-    exec(command, { cwd }, (error, stdout) => {
-      if (error) {
-        rejected(error);
-        return;
-      }
-      resolve(stdout);
-    });
-  });
-};
-
-const sync = async () => {
-  const status = await execCommand("git status");
-
-  const allowCommit = [
-    "Changes not staged for commit",
-    "Changes to be committed",
-  ];
-
-  if (allowCommit.some((item) => status.indexOf(item) !== -1)) {
-    await execCommand(
-      `git add . && git commit -m "[${new Date().toLocaleString()}] sync"`
-    );
-  }
-
-  await execCommand("git pull origin " + branchName);
-};
-
-const isClean = async () => {
-  const result = await execCommand("git status");
-  return result.indexOf("working tree clean") === -1;
-};
-
-const action = async () => {
-  if (loading) return;
-  loading = true;
-
-  branchName = await execCommand("git branch --show-current");
-
-  try {
-    await sync();
-    if (await isClean()) return;
-    await execCommand("git push origin " + branchName);
-    const [, ...msg] = (await execCommand("git log -1 --pretty=oneline")).split(
-      " "
-    );
-
-    const message = msg.join(" ");
-    if (lastCommitMsg && lastCommitMsg === message) return;
-    lastCommitMsg = message;
-
-    notifier.notify({
-      title: "Sync successfully to server",
-      message,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-
-  loading = false;
-};
-
-setInterval(action, 1000);
+subprocess.unref();
