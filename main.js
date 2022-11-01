@@ -12,6 +12,7 @@ const children = fork(subProcess, {
 });
 
 children.stderr.setEncoding("utf-8");
+
 children.stderr.on("data", function (error) {
   console.error(error);
 });
