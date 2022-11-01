@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "commander": "^9.4.1",
     "node-notifier": "^10.0.1"
   }
 }
