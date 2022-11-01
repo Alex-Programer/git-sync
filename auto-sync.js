@@ -89,4 +89,5 @@ const action = async () => {
   loading = false;
 };
 
+process.send("ready");
 setInterval(action, 1000);

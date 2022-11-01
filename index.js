@@ -12,7 +12,15 @@ const children = fork(subProcess, {
 });
 
 children.stderr.setEncoding("utf-8");
-
 children.stderr.on("data", function (error) {
   console.error(error);
+});
+
+children.on("message", (data) => {
+  if (data === "ready") {
+    children.unref();
+    process.exit(1);
+  } else {
+    throw new Error("unkown error for message");
+  }
 });
