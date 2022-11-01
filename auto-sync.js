@@ -35,6 +35,7 @@ const sync = async () => {
   const allowCommit = [
     "Changes not staged for commit",
     "Changes to be committed",
+    "Untracked files",
   ];
 
   if (allowCommit.some((item) => status.indexOf(item) !== -1)) {
