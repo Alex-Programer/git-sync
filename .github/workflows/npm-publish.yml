@@ -1,33 +1,29 @@
-name: npm-publish
+name: Public Npm
+
 on:
   push:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
-  npm-publish:
-    name: npm-publish
+  publish:
     runs-on: ubuntu-latest
+
+    name: "publish npm"
+
+    environment: npm
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@master
 
-      - name: install dep
-        run: npm install
+      - name: Install and Build
+        run: |
+          npm install
+          npm run build
 
-      - name: build app
-        run: npm run build
-
-      - name: Publish if version has been updated
-        uses: pascalgn/npm-publish-action@1.3.9
-        with:
-          tag_name: "v%s"
-          tag_message: "v%s"
-          create_tag: "true"
-          commit_pattern: "^Release (\\S+)"
-          workspace: "."
-          publish_command: "yarn"
-          publish_args: "--non-interactive"
+      - name: "Publish to the npm registry"
+        uses: primer/publish@3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        with:
+          default_branch: "master"
