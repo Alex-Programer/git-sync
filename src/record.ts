@@ -11,9 +11,18 @@ if (!fs.existsSync(configPath)) {
   });
 }
 
+const processRunning = (pid: number) => {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 const get = async () => {
   const config = await readFile(configPath, "utf-8");
-  return JSON.parse(config);
+  return JSON.parse(config) as Record<string, { pid: number; name: string; status: string }>
 };
 
 const set = async (item: { targetPath: string; pid: number, name: string }) => {
@@ -26,23 +35,39 @@ const set = async (item: { targetPath: string; pid: number, name: string }) => {
   await writeFile(configPath, JSON.stringify(config));
 };
 
-const del = async (targetPath: string) => {
+const del = async (pid: number) => {
   const config = await get();
-  const result: Record<string, string> = {};
+  const result: Record<string, { pid: number; name: string; status: string }> = {};
 
   for (const item in config) {
-    if (targetPath !== item) {
+    if (config[item].pid !== pid) {
+      console.log(config[item].pid, pid)
       result[item] = config[item];
     }
   }
 
+  try {
+    process.kill(+pid);
+  } catch (error) {
+
+  }
+
   await writeFile(configPath, JSON.stringify(result));
+  await print();
 };
 
 const print = async () => {
   const config = await get();
   const configTableData = Object.values(config);
-  printTable(configTableData);
+
+  if (configTableData.length) {
+    configTableData.forEach(item => {
+      item.status = processRunning(item.pid) ? 'online' : 'offline';
+    })
+    printTable(configTableData);
+  } else {
+    console.log('empty task');
+  }
 }
 
 export const record = {

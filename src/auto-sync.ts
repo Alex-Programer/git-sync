@@ -25,7 +25,7 @@ const syncToLocal = async () => {
   needCommit && await execCommand(
     `git add . && git commit -m "[${new Date().toLocaleString()}] sync"`
   );
-  await execCommand("git pull origin " + currentBranchName);
+  await execCommand(`git pull origin ${currentBranchName}`);
 };
 
 const syncToServer = async () => {

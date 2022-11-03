@@ -1,6 +1,6 @@
 {
   "name": "git-sync-repo",
-  "version": "0.0.5-beta",
+  "version": "0.0.6-beta",
   "description": "auto sync repo",
   "main": "./lib/cli.js",
   "bin": {
