@@ -15,5 +15,5 @@ npm install git-sync-repo -g
 
 ## 运行流程
 
-![alt work process](/work-process.png)
+![alt work process](https://raw.githubusercontent.com/Alex-Programer/git-sync/master/work-process.png)
 
