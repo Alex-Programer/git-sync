@@ -2,17 +2,24 @@
   "name": "git-sync-repo",
   "version": "0.0.5-beta",
   "description": "auto sync repo",
-  "main": "index.js",
+  "main": "./lib/cli.js",
   "bin": {
-    "sync": "./index.js"
+    "sync": "./lib/cli.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "onchange 'src/**/*.ts' -- npm run build",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "commander": "^9.4.1",
+    "console-table-printer": "^2.11.1",
     "node-notifier": "^10.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "@types/node-notifier": "^8.0.2",
+    "onchange": "^7.1.0"
   }
 }
