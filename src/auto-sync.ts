@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import notifier from "node-notifier";
 import { execCommand, getBestNewLog, isClean } from "./utils";
-import { MessageKey } from "./utils/constant";
+import { DEFAULT_TIME, MessageKey } from "./utils/constant";
 
 const cwd = process.cwd();
 const gitDir = path.resolve(cwd, ".git");
@@ -63,10 +63,12 @@ const syncToServer = async () => {
   loading = false;
 };
 
-if (process.send) {
-  process.send(MessageKey.READY);
-} else {
-  console.warn('process send api is invalid');
-}
-
-setInterval(syncToServer, 1000);
+process.on('message', data => {
+  const time = data === MessageKey.DEFAULT_READY ? DEFAULT_TIME : Number(data) * 1000;
+  setInterval(syncToServer.bind(null, time), time);
+  if (process.send) {
+    process.send(MessageKey.READY);
+  } else {
+    console.warn('process send api is invalid');
+  }
+});

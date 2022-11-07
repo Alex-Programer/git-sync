@@ -22,15 +22,16 @@ const processRunning = (pid: number) => {
 
 const get = async () => {
   const config = await readFile(configPath, "utf-8");
-  return JSON.parse(config) as Record<string, { pid: number; name: string; status: string }>
+  return JSON.parse(config) as Record<string, { pid: number; name: string; status: string; loop: number | string }>
 };
 
-const set = async (item: { targetPath: string; pid: number, name: string }) => {
+const set = async (item: { targetPath: string; pid: number, name: string, loop: number }) => {
   const config = await get();
   config[item.targetPath] = {
     pid: item.pid,
     name: item.name,
-    status: 'online'
+    status: 'online',
+    loop: item.loop
   };
   await writeFile(configPath, JSON.stringify(config));
 };
@@ -63,6 +64,7 @@ const print = async () => {
   if (configTableData.length) {
     configTableData.forEach(item => {
       item.status = processRunning(item.pid) ? 'online' : 'offline';
+      item.loop = ((item.loop as number) / 1000) + 's'
     })
     printTable(configTableData);
   } else {
