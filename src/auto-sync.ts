@@ -65,7 +65,8 @@ const syncToServer = async () => {
 
 process.on('message', data => {
   const time = data === MessageKey.DEFAULT_READY ? DEFAULT_TIME : Number(data) * 1000;
-  setInterval(syncToServer.bind(null, time), time);
+  syncToServer();
+  setInterval(syncToServer, time);
   if (process.send) {
     process.send(MessageKey.READY);
   } else {
